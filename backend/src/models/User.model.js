@@ -37,8 +37,8 @@ const userSchema = new mongoose.Schema({
         default:""
     },
     isOnboarded:{
-        type:String,
-        default:""
+        type:Boolean,
+        default:false
     },
     friends:[
         {

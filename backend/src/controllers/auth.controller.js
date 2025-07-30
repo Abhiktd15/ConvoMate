@@ -59,6 +59,7 @@ const signup = TryCatch(async(req ,res) => {
         sameSite:'strict',
         secure:process.env.NODE_ENV === 'production'
     })
+    
     return res.status(201).json({
         success:true,
         message:"User Registered Successfully!",
@@ -115,4 +116,73 @@ const logout = TryCatch(async(req ,res) => {
     })
 })
 
-export {login,logout,signup}
+const onBoard = TryCatch(async (req,res) => {
+    const userId = req.user._id;
+
+    const { fullName, bio, nativeLanguage, learningLanguage, location } = req.body;
+
+    if (!fullName || !bio || !nativeLanguage || !learningLanguage || !location) {
+        return res.status(400).json({
+            success: false,
+            message: "All fields are required for onboarding!",
+            missing:[
+                !fullName && "fullName",
+                !bio && "bio",
+                !nativeLanguage && "nativeLanguage",
+                !learningLanguage && "learningLanguage",
+                !location && "location"
+            ].filter(Boolean)
+        });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId,{
+        fullName,
+        bio,
+        nativeLanguage,
+        learningLanguage,
+        location,
+        isOnboarded:true,
+    },{new:true})
+
+    if(!updatedUser){
+        return res.status(404).json({
+            success:false,
+            message:"User not found!"
+        })
+    }
+
+    //TODO: Update the profile in stream
+    try {
+        await upsertStreamUser({
+            id:updatedUser._id.toString(),
+            name:updatedUser.fullName,
+            image:updatedUser.profilePic || ""
+        })
+        console.log("Stream user data is updated")
+    } catch (error) {
+        console.log("Error updating the Stream user data",error);
+    }
+    
+    return res.status(200).json({
+        success:true,
+        message:"User Onboarded Successfull!",
+        user:updatedUser
+    })
+})
+
+const checkAuth = TryCatch(async (req,res) => {
+    const user = req.user
+    if(!user){
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized - User not found!"
+        });
+    }
+    return res.status(200).json({
+        success:true,
+        message: `Welcome Back, ${user.fullName}`,
+        user
+    })
+})
+
+export {login,logout,signup,onBoard,checkAuth}
