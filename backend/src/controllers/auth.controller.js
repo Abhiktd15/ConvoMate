@@ -1,3 +1,5 @@
+import { ConnectionCheckOutStartedEvent } from "mongodb"
+import { upsertStreamUser } from "../lib/stream.js"
 import { TryCatch } from "../middlewares/error.js"
 import User from "../models/User.model.js"
 import jwt from 'jsonwebtoken'
@@ -37,6 +39,18 @@ const signup = TryCatch(async(req ,res) => {
         password,
         profilePic:randomAvatar
     })
+
+    try {
+        await upsertStreamUser({
+            id:newUser._id.toString(),
+            name:newUser.fullName,
+            image:newUser.profilePic || ""
+        })
+        console.log(`Stream User created for ${newUser.fullName}`)
+    } catch (error) {
+        console.log("Error creating Stream User:",error)
+    }
+
     const token = jwt.sign({userId:newUser._id},process.env.JWT_SECRET_KEY,{expiresIn:'1d'})
     
     res.cookie("jwt",token,{
