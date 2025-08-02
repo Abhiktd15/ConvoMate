@@ -8,12 +8,20 @@ import CallPage from './pages/CallPage'
 import OnboardingPage from './pages/OnboardingPage'
 import ChatPage from './pages/ChatPage'
 import {toast, Toaster} from 'react-hot-toast'
+import { useQuery } from '@tanstack/react-query'
+import { axiosInstance } from './lib/axios'
 
 
 const App = () => {
+  const {data,isLoading,error} = useQuery({ queryKey: ['todos'], 
+    queryFn: async () => {
+      const res = await axiosInstance.get('/api/auth/me')
+      return res.data;
+    }
+  })
+  
   return (
     <div className='h-screen'>
-      <button onClick={() => toast.success("Here is your toast")}>Create Toast</button>
 
       <Routes>
         <Route path='/' element={<HomePage/>}/>
