@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router'
 import Banner from '../../public/singupPageBanner.png'
 import { signup } from '../lib/api'
+import toast from 'react-hot-toast'
 
 const SignupPage = () => {
   const [signupData,setSignupData] = useState({
@@ -15,13 +16,17 @@ const SignupPage = () => {
 
   const {mutate:signupMutation,isPending,error} = useMutation({
     mutationFn: signup,
-    onSuccess: () => queryClient.invalidateQueries({queryKey:['authUser']})
+    onSuccess: () => queryClient.invalidateQueries({queryKey:['authUser']}),
+    onError:(error) =>{
+      toast.error(error.response.data.message)
+    }
   })
   
   const handleSignUp = (e) => {
     e.preventDefault();
     signupMutation(signupData);
   }
+
   
   return (
     <div data-theme='dark' className='h-screen flex items-center justify-center p-4 sm:p-6 md:p-8'>
@@ -33,14 +38,6 @@ const SignupPage = () => {
             <ShipWheelIcon className="size-9 text-primary"/>
             <span className='text-3xl font-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider'>ConvoMate</span>
           </div>
-
-          {/* Error Message if any */}
-          {error && (
-            <div className='alert alert-error mb-4'>
-              <span>{error.response.data.message}</span>
-            </div>
-          )}
-
           <div className='w-full'>
             <form onSubmit={handleSignUp}>
               <div className='space-y-4'>

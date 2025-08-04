@@ -8,3 +8,15 @@ export const signup = async (signupData) => {
     }
     return response.data;
 }
+export const getAuthUser =  async () => {
+    const res = await axiosInstance.get('/auth/me')
+    return res.data;
+}
+
+export const completeOnboarding =  async (onboardingData) => {
+    const res = await axiosInstance.post('/auth/onboarding',onboardingData)
+    if(res.data.success){
+        toast.success(res.data.message)
+    }
+    return res.data;
+}
