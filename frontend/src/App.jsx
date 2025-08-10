@@ -10,6 +10,7 @@ import LoginPage from './pages/LoginPage'
 import NotificationsPage from './pages/NotificationsPage'
 import OnboardingPage from './pages/OnboardingPage'
 import SignupPage from './pages/SignupPage'
+import Layout from './components/Layout'
 
 
 const App = () => {
@@ -21,15 +22,15 @@ const App = () => {
   if(isLoading) return <PageLoader/>
   
   return (
-    <div className='h-screen'>
+    <div className='h-screen' data-theme="dark">
 
       <Routes>
-        <Route path='/' element={isAuthenticated && isOnboarded ? <HomePage/>:<Navigate to={!isAuthenticated ?'/login':'/onboarding'}/>}/>
+        <Route path='/' element={isAuthenticated && isOnboarded ? <Layout showSidebar><HomePage/></Layout>:<Navigate to={!isAuthenticated ?'/login':'/onboarding'}/>}/>
         <Route path='/signup' element={!isAuthenticated ? <SignupPage/>:<Navigate to={isOnboarded ? "/" :"/onboarding"}/>}/>
         <Route path='/login' element={!isAuthenticated ? <LoginPage/>:<Navigate to={isOnboarded ? "/" :"/onboarding"}/>}/>
         <Route path='/notifications' element={isAuthenticated ? <NotificationsPage/>:<Navigate to={'/login'}/>}/>
         <Route path='/call' element={isAuthenticated ? <CallPage/>:<Navigate to={'/login'}/>}/>
-        <Route path='/chat' element={isAuthenticated ? <ChatPage/>:<Navigate to={'/login'}/>}/>
+        <Route path='/chat' element={isAuthenticated ? <Layout><ChatPage/></Layout>:<Navigate to={'/login'}/>}/>
         <Route path='/onboarding' element={isAuthenticated ? (
           !isOnboarded ? (
             <OnboardingPage/>

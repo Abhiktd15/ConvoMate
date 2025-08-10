@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ShipWheelIcon } from 'lucide-react'
 import React, { useState } from 'react'
-import Banner from '../../public/singupPageBanner.png'
+import Banner from '../assets/singupPageBanner.png'
 import { login } from '../lib/api'
 import { Link } from 'react-router'
 import toast from 'react-hot-toast'
