@@ -11,10 +11,12 @@ import NotificationsPage from './pages/NotificationsPage'
 import OnboardingPage from './pages/OnboardingPage'
 import SignupPage from './pages/SignupPage'
 import Layout from './components/Layout'
+import { useThemeStore } from './store/useThemeStore'
 
 
 const App = () => {
   const {isLoading,authUser} = useAuthUser()
+  const {theme} = useThemeStore()
 
   const isAuthenticated = Boolean(authUser)
   const isOnboarded = authUser?.isOnboarded;
@@ -22,7 +24,7 @@ const App = () => {
   if(isLoading) return <PageLoader/>
   
   return (
-    <div className='h-screen' data-theme="dark">
+    <div className='h-screen' data-theme={theme}>
 
       <Routes>
         <Route path='/' element={isAuthenticated && isOnboarded ? <Layout showSidebar><HomePage/></Layout>:<Navigate to={!isAuthenticated ?'/login':'/onboarding'}/>}/>
