@@ -10,6 +10,7 @@ const Navbar = () => {
     const {authUser} = useAuthUser()
     const location = useLocation()
     const isChatPage = location.pathname?.startsWith("/chat");
+    
 
     const queryClient = useQueryClient()
     const {mutate:logoutMutation} = useMutation({
@@ -32,7 +33,7 @@ const Navbar = () => {
                             </Link>
                         </div>
                     )}
-                    <div className='flex items-center gap-3 sm:gap-4'>
+                    <div className='flex items-center gap-3 sm:gap-4 ml-auto'>
                         <Link to={'/notifications'}>
                             <button className='btn btn-ghost btn-circle'>
                                 <BellIcon className='size-6 text-base-content opacity-70'/>
@@ -50,6 +51,7 @@ const Navbar = () => {
                     <button className='btn btn-ghost btn-circle' onClick={logoutMutation}>
                         <LogOutIcon className='size-6 text-base-content opacity-70'/>
                     </button>
+                
                 </div>
             </div>
         </nav>
